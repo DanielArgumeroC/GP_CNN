@@ -19,8 +19,9 @@ class redneuronal:
         self.bias3 = np.zeros((1, salida))
 
     def forward(self, entradas, salida):
+        print(entradas.shape)
         salida = np.array(salida)
-        self.x = np.reshape(entradas, (1, 1016064))
+        self.x = np.reshape(entradas, 1016064)
         self.hidden_1 = np.dot(entradas, self.pesos1) + self.bias1
         self.hidden_1_activation = sigmoide.sigmoid(self.hidden_1)
         

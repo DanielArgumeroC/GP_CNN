@@ -1,11 +1,8 @@
-import time
-
 import convolucion, relu, max_pool, flaten
-
 
 class estructura:
     def __init__(self):
-        self.c1 = convolucion.Convolucion(32, 1, 3, 1)
+        self.c1 = convolucion.Convolucion(32, 3, 3, 1)
         self.r1 = relu.Relu()
         self.mp1 = max_pool.Max_pooling(2, 2)
 
@@ -43,4 +40,4 @@ class estructura:
         retro = self.c2.backward(retro, self.imagen2)
         retro = self.mp1.backward(retro)
         retro = self.r1.backward(retro)
-        self.c1.backward(retro, imagen)
+        retro = self.c1.backward(retro, imagen)

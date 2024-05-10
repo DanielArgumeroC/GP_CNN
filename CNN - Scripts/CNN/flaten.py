@@ -1,5 +1,3 @@
-import numpy as np
-
 class Flaten:
     def forward(self, imagen):
         self.estructura = imagen.shape
