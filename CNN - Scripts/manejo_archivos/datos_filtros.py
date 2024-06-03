@@ -4,7 +4,7 @@ from pathlib import Path
 current_directory = Path.cwd()
 
 def map():
-    data_path = current_directory / 'CNN - Scripts' / 'datos_CNN' / 'info.txt'
+    data_path = current_directory / 'datos_CNN' / 'info.txt'
     archivo = open(str(data_path), "r")
 
     texto = archivo.readlines()
@@ -21,7 +21,7 @@ def map():
     return datos
 
 def escribir_filtros(filtros, numero):
-    data_path = current_directory / 'CNN - Scripts' / 'filtros'
+    data_path = current_directory / 'filtros'
     with open(data_path / f'filtros{numero}.txt', "w") as archivo:
         escribir = ""
         for i in range(filtros.shape[0]):
@@ -37,7 +37,7 @@ def escribir_filtros(filtros, numero):
         archivo.write(escribir)
             
 def leer_filtros(matriz, numero):
-    data_path = current_directory / 'CNN - Scripts' / 'filtros'
+    data_path = current_directory / 'filtros'
     with open(data_path / f'filtros{numero}.txt', "r") as archivo:
         contadorY = -1
         profundidad = -1

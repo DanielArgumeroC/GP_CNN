@@ -6,16 +6,17 @@ current_directory = Path.cwd()
 
 def traer_imagen(imagen_name):
     # Construir la ruta completa al archivo de imagen
-    image_path = current_directory / 'WebApp' / 'Server' / 'uploads' / imagen_name
+    
+    image_path = current_directory.parent / 'WebApp' / 'Server' / 'uploads' / imagen_name
     image = io.imread(image_path)
-    image_resize = transform.resize(image, (144, 144))
+    image_resize = transform.resize(image, (1024, 1024))
     if image_resize.shape[2] == 4:
         image_resize = image_resize[:,:,:3]
     return image_resize
 
 def traer_imagen_prueba(imagen_name):
     # Construir la ruta completa al archivo de imagen
-    image_path = current_directory / 'CNN - Scripts' / 'datos_CNN' / imagen_name
+    image_path = current_directory / 'datos_CNN' / imagen_name
     image = io.imread(image_path)
     image_resize = transform.resize(image, (144, 144))
     if image_resize.ndim == 2:
@@ -28,8 +29,8 @@ def traer_imagen_prueba(imagen_name):
 
 def clasificar(imagen_name, clasificacion):
     carpeta = "Normal"
-    path = current_directory / 'CNN - Scripts' / 'datos_CNN' / imagen_name
+    path = current_directory / 'datos_CNN' / imagen_name
     if clasificacion == 1:
         carpeta = "Anormal"
-    new_path = current_directory / 'CNN - Scripts' / 'clasificacion' / carpeta / imagen_name
+    new_path = current_directory / 'clasificacion' / carpeta / imagen_name
     shutil.move(path, new_path)
