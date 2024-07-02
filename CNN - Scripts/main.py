@@ -24,6 +24,9 @@ name = first_file.name
 from CNN import estructura
 from FC import redneuronal
 from manejo_archivos import gestion_imagenes, datos_filtros
+import threading
+import multiprocessing
+
 
 def escribir():
     datos_filtros.escribir_filtros(CNN.c1.filtros, 1)
@@ -80,14 +83,23 @@ def clasificarImagen(image):
     print("dato devuelto", dato[0][0])
 
     return dato[0][0]*100
-    
-if __name__ == '__main__':
 
-    CNN = estructura.estructura()
+CNN = estructura.estructura()
+
+rn = None
+
+def process_image():
+    global rn
     l = 0.5
     rn = redneuronal.redneuronal(64*126*126, 64, 64, 1, l)
+    
     leer()
     #name es el nombre de la imagen guardada 
     image = gestion_imagenes.traer_imagen(name)
+
     respuesta = clasificarImagen(image)
-    print(respuesta)
+    return respuesta
+
+if __name__ == '__main__':
+    process_image()
+

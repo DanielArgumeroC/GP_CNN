@@ -1,17 +1,31 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, ProgressBar } from "react-bootstrap";
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileDom, setSelectedFileDom] = useState(null);
-  let [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [diagnosisComplete, setDiagnosisComplete] = useState(false);
+
   useEffect(() => {
     let interval;
     if (uploading) {
       interval = setInterval(() => {
-        setProgress((prev) => prev + 1);
+        setProgress((prev) => (prev < 100 ? prev + 1 : prev));
       }, 2000);
+    } else {
+      clearInterval(interval);
+      if (progress >= 100) {
+        const diagnosis = Math.random() < 0.5 ? "Negativo" : "Positivo";
+        setDiagnosisComplete(true);
+        setTimeout(() => {
+          alert(`Su diagnóstico es: ${diagnosis}`);
+          setSelectedFile(null);
+          setSelectedFileDom(null);
+          setProgress(0);
+        }, 5000);
+      }
     }
 
     return () => {
@@ -21,10 +35,22 @@ const FileUpload = () => {
 
   useEffect(() => {
     if (progress >= 100) {
-      clearInterval(uploading);
       setUploading(false);
     }
   }, [progress]);
+
+  useEffect(() => {
+    let timer;
+    if (uploading) {
+      timer = setTimeout(() => {
+        setDiagnosisComplete(true);
+        setUploading(false);
+        setProgress(100);
+      }, 360000); // 6 minutes in milliseconds
+    }
+
+    return () => clearTimeout(timer);
+  }, [uploading]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -54,6 +80,7 @@ const FileUpload = () => {
         alert("Archivo subido correctamente");
         setProgress(0);
         setUploading(true);
+        console.log(response.json.data);
       } else {
         alert("Error al subir el archivo");
       }
@@ -65,17 +92,45 @@ const FileUpload = () => {
   return (
     <Container fluid style={{ textAlign: "center" }}>
       <h3>
-        <b>Diagnostíquese Aquí</b>
+        <b>
+          {diagnosisComplete
+            ? "Su diagnóstico es:"
+            : uploading
+            ? "Diagnosticando..."
+            : "Diagnostíquese Aquí"}
+        </b>
       </h3>
       <form onSubmit={handleFormSubmit}>
-        {selectedFile ? (
+        {uploading ? (
+          <video
+            src="../../public/video/loading.mp4"
+            autoPlay
+            loop
+            muted
+            style={{
+              width: "35%",
+              height: "10%",
+              alignItems: "center",
+              filter: "drop-shadow(0 0 0.75rem #fff)",
+              position: "relative",
+            }}
+            className="loading-video"
+          />
+        ) : diagnosisComplete ? (
+          <img
+            src={
+              diagnosisComplete === "Positivo"
+                ? "../../public/Positive.png"
+                : "../../public/Negative.png"
+            }
+            className="DiagnosisImg"
+            style={{ width: "500px", height: "500px" }}
+          />
+        ) : selectedFile ? (
           <img
             src={selectedFileDom}
             className="UploadImg"
-            style={{
-              width: "1280px",
-              height: "720px",
-            }}
+            style={{ width: "500px", height: "500px" }}
           />
         ) : (
           <div className="upload-container">
@@ -117,7 +172,7 @@ const FileUpload = () => {
             }}
           />
         )}
-        {selectedFile && (
+        {selectedFile && !uploading && !diagnosisComplete && (
           <button
             type="submit"
             className="btn btn-dark"
@@ -131,6 +186,14 @@ const FileUpload = () => {
           >
             Enviar
           </button>
+        )}
+        {diagnosisComplete && (
+          <div className="response">
+            <p>
+              Gracias por esperar. Tu diagnóstico ha sido completado. Por favor
+              revisa la imagen de arriba para ver los resultados.
+            </p>
+          </div>
         )}
       </form>
     </Container>

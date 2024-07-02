@@ -12,7 +12,7 @@ export const uploadImage = (req, res) => {
 
   // Ejecutar el script main.py después de subir la imagen con éxito
 
-  const comand = "cd .. & cd .. & cd CNN - Scripts & py main.py";
+  const comand = "cd .. & cd .. & cd CNN - Scripts & py main.py process_image";
   exec(comand, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error al ejecutar el script: ${error.message}`);
